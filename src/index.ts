@@ -1,24 +1,19 @@
-import express from "express";
-import cors from "cors";
-import morgan from "morgan";
+import app from "./app";
+import { AppDataSource } from "./db/conexion";
 
-import estudiantesRoutes from './routes/estudiantesRoutes';
-import profesoresRoutes from './routes/profesoresRoutes';
-import cursosRoutes from './routes/cursosRoutes';
+async function main(){
+    try {
+        await AppDataSource.initialize();
+        console.log("Database is connected");
+        app.listen(3500, () => {
+            console.log("Server is running on http://localhost:3500");
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message);
+        }
+    }
+    
+}
 
-const app = express();
-
-app.use(morgan("dev"));
-app.use(cors());
-
-app.get("/", (req, res) => {
-    res.json({ error: "---404---" });
-});
-
-app.use('/estudiantes', estudiantesRoutes);
-app.use('/profesores', profesoresRoutes);
-app.use('/cursos', cursosRoutes);
-
-app.listen(3500, () => {
-    console.log("Server is running on http://localhost:3500");
-});
+main();
